@@ -1,0 +1,24 @@
+# values.yaml
+replicaCount: 2
+image:
+  repository: my-app-image
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: my-app.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
