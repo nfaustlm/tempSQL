@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://example.com/car-dealership"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+
+    <!-- Request for getting service details -->
+    <element name="GetServiceRequest">
+        <complexType>
+            <sequence>
+                <element name="VIN" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- Response for getting service details -->
+    <element name="GetServiceResponse">
+        <complexType>
+            <sequence>
+                <element name="ServiceType" type="string"/>
+                <element name="ServiceDate" type="date"/>
+                <element name="Cost" type="decimal"/>
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- Request for getting parts availability -->
+    <element name="GetPartsRequest">
+        <complexType>
+            <sequence>
+                <element name="PartNumber" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- Response for getting parts availability -->
+    <element name="GetPartsResponse">
+        <complexType>
+            <sequence>
+                <element name="PartName" type="string"/>
+                <element name="Price" type="decimal"/>
+                <element name="StockAvailable" type="boolean"/>
+            </sequence>
+        </complexType>
+    </element>
+
+</schema>
