@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="CarDealershipService"
+    targetNamespace="http://example.com/car-dealership"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:tns="http://example.com/car-dealership"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+    <!-- Import External XSD -->
+    <types>
+        <xsd:import namespace="http://example.com/car-dealership" schemaLocation="CarDealershipSchema.xsd"/>
+    </types>
+
+    <!-- Messages -->
+    <message name="GetServiceRequest">
+        <part name="serviceRequest" element="tns:GetServiceRequest"/>
+    </message>
+    <message name="GetServiceResponse">
+        <part name="serviceResponse" element="tns:GetServiceResponse"/>
+    </message>
+    <message name="GetPartsRequest">
+        <part name="partsRequest" element="tns:GetPartsRequest"/>
+    </message>
+    <message name="GetPartsResponse">
+        <part name="partsResponse" element="tns:GetPartsResponse"/>
+    </message>
+
+    <!-- Port Type -->
+    <portType name="CarDealershipPortType">
+        <operation name="GetService">
+            <input message="tns:GetServiceRequest"/>
+            <output message="tns:GetServiceResponse"/>
+        </operation>
+        <operation name="GetParts">
+            <input message="tns:GetPartsRequest"/>
+            <output message="tns:GetPartsResponse"/>
+        </operation>
+    </portType>
+
+    <!-- Binding -->
+    <binding name="CarDealershipBinding" type="tns:CarDealershipPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetService">
+            <soap:operation soapAction="http://example.com/car-dealership/GetService"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="GetParts">
+            <soap:operation soapAction="http://example.com/car-dealership/GetParts"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Service -->
+    <service name="CarDealershipService">
+        <port name="CarDealershipPort" binding="tns:CarDealershipBinding">
+            <soap:address location="http://example.com/car-dealership/service"/>
+        </port>
+    </service>
+
+</definitions>
