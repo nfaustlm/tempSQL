@@ -1,24 +1,55 @@
-# values.yaml
-replicaCount: 2
+# SonarQube Flagged Issues Introduced
+
+replicaCount: 5  # Over-provisioning without auto-scaling (Resource exhaustion risk)
+
 image:
   repository: my-app-image
-  tag: latest
-  pullPolicy: IfNotPresent
+  tag: latest  # ❌ Using 'latest' makes deployments unpredictable (CVE exposure risk)
+  pullPolicy: Always  # ❌ Always pulling the image increases deployment time and can lead to instability
+
 service:
-  type: ClusterIP
+  type: NodePort  # ❌ Exposing the service externally increases attack surface
   port: 80
+  nodePort: 30000  # ❌ Hardcoded NodePort can be a security risk if exposed
+
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: "/"  # ❌ Potentially insecure URL rewriting
   hosts:
     - host: my-app.local
       paths:
         - path: /
           pathType: ImplementationSpecific
+
 resources:
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: "2000m"  # ❌ Over-allocating CPU (Denial of Service risk)
+    memory: "4Gi"  # ❌ Excessive memory allocation without justification
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: "50m"  # ❌ Very low CPU request (Pod might get throttled)
+    memory: "64Mi"  # ❌ Insufficient memory request (Risk of OOM kills)
+
+securityContext:  # ❌ Missing security best practices
+  runAsUser: 0  # ❌ Running as root is dangerous
+  allowPrivilegeEscalation: true  # ❌ Allows privilege escalation (Container escape risk)
+
+env:  # ❌ Hardcoded credentials (Critical security issue)
+  - name: DATABASE_USER
+    value: "admin"
+  - name: DATABASE_PASSWORD
+    value: "password123"  # ❌ Storing plaintext credentials in YAML
+
+livenessProbe:  # ❌ Missing proper health checks
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 0  # ❌ No delay means container could be restarted too quickly
+  periodSeconds: 30  # ❌ High period means delayed failure detection
+
+readinessProbe:  # ❌ Incomplete readiness check
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 0
+  timeoutSeconds: 1  # ❌ Short timeout might not allow the service to properly start
