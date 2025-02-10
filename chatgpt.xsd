@@ -1,46 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema targetNamespace="http://example.com/car-dealership"
-    xmlns="http://www.w3.org/2001/XMLSchema"
-    elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://example.com/hr"
+           xmlns="http://example.com/hr"
+           elementFormDefault="qualified">
 
-    <!-- Request for getting service details -->
-    <element name="GetServiceRequest">
-        <complexType>
-            <sequence>
-                <element name="VIN" type="string"/>
-            </sequence>
-        </complexType>
-    </element>
+    <!-- Employee SOAP Request -->
+    <xs:element name="EmployeeRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="EmployeeID" type="xs:string"/>  <!-- No validation on EmployeeID -->
+                <xs:element name="SSN" type="xs:string"/>  <!-- Sensitive data exposed in plaintext -->
+                <xs:element name="Password" type="xs:string"/>  <!-- Storing password in plaintext -->
+                <xs:element name="SecurityQuestion" type="xs:string"/>  <!-- Allows harvesting of security answers -->
+                <xs:element name="SecurityAnswer" type="xs:string"/>  <!-- No hashing, plaintext -->
+                <xs:element name="Address" type="xs:string" minOccurs="0"/>  <!-- Open-ended input, no validation -->
+                <xs:element name="PhoneNumber" type="xs:string" minOccurs="0"/>  <!-- No format validation -->
+                <xs:element name="Comments" type="xs:string"/>  <!-- No length restriction, DoS risk -->
+                <xs:element name="XMLData">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:any processContents="lax" maxOccurs="unbounded"/>  <!-- XXE Injection Risk -->
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-    <!-- Response for getting service details -->
-    <element name="GetServiceResponse">
-        <complexType>
-            <sequence>
-                <element name="ServiceType" type="string"/>
-                <element name="ServiceDate" type="date"/>
-                <element name="Cost" type="decimal"/>
-            </sequence>
-        </complexType>
-    </element>
+    <!-- Employee SOAP Response -->
+    <xs:element name="EmployeeResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Status" type="xs:string"/>  <!-- No predefined values, prone to injection -->
+                <xs:element name="Message" type="xs:string"/>  <!-- Overly permissive, allows excessive data -->
+                <xs:element name="Salary" type="xs:decimal" minOccurs="0"/>  <!-- Exposing salary data -->
+                <xs:element name="ConfidentialNotes" type="xs:string" minOccurs="0"/>  <!-- Sensitive data exposure -->
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-    <!-- Request for getting parts availability -->
-    <element name="GetPartsRequest">
-        <complexType>
-            <sequence>
-                <element name="PartNumber" type="string"/>
-            </sequence>
-        </complexType>
-    </element>
-
-    <!-- Response for getting parts availability -->
-    <element name="GetPartsResponse">
-        <complexType>
-            <sequence>
-                <element name="PartName" type="string"/>
-                <element name="Price" type="decimal"/>
-                <element name="StockAvailable" type="boolean"/>
-            </sequence>
-        </complexType>
-    </element>
-
-</schema>
+</xs:schema>
