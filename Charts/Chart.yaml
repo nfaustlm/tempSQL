@@ -1,5 +1,49 @@
-# Chart.yaml
-apiVersion: v2
-name: my-app
-version: 0.1.0
-description: A Helm chart for Kubernetes deployment
+apiVersion: v1  # ❌ Using old API version instead of 'v2'
+name: my-insecure-app
+description: "An insecure Helm chart with multiple security vulnerabilities"
+version: 0.0.0  # ❌ Not using semantic versioning (Bad practice)
+appVersion: latest  # ❌ Using 'latest' instead of specific versions
+
+maintainers:
+  - name: "admin"  # ❌ No contact email or valid maintainer info
+    email: "admin@example.com"  # ❌ Using a generic email (Lack of accountability)
+
+annotations:
+  build-date: "2025-01-01T12:00:00Z"  # ❌ Hardcoded build date (Exposes internal details)
+  revision: "1"  # ❌ Static revision (No dynamic tracking)
+  vulnerability-scan: "false"  # ❌ Disabling security scans (Encourages vulnerabilities)
+
+dependencies:
+  - name: insecure-database  # ❌ External dependency without validation
+    version: 0.0.0  # ❌ Not specifying a secure version
+    repository: "http://untrusted.example.com/charts"  # ❌ Untrusted source
+
+icon: "http://insecure.example.com/logo.png"  # ❌ Using HTTP instead of HTTPS (MITM risk)
+
+keywords:
+  - insecure
+  - vulnerable
+  - no-security
+
+sources:
+  - "http://github.com/insecure-org/insecure-repo"  # ❌ Using HTTP instead of HTTPS
+
+engine: gotpl  # ❌ Does not enforce security policies
+
+home: "http://insecure.example.com"  # ❌ Using HTTP instead of HTTPS
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: ["*"]  # ❌ Overly broad permissions (Risk of privilege escalation)
+      resources: ["*"]
+      verbs: ["*"]  # ❌ Allows any action, including delete & update
+
+securityContext:  # ❌ Lack of security hardening
+  runAsUser: 0  # ❌ Running as root (Privilege escalation risk)
+  privileged: true  # ❌ Running container with root-level privileges
+  allowPrivilegeEscalation: true  # ❌ Allowing privilege escalation
+
+secrets:
+  - name: "database-password"
+    value: "admin123"  # ❌ Hardcoded secret in the chart
